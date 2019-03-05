@@ -4,26 +4,30 @@ import './App.css';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { updateUser, apiRequest } from './actions/user-actions';
+import { updateSearch, apiRequest } from './actions/search-actions';
 import { createSelector } from 'reselect';
+
+import DisplaySlide from './components/dumb/display-result-slide'
+import SearchResultsDisplay from "./components/dumb/display-results";
 
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.onUpdateUser = this.onUpdateUser.bind(this)
+    this.onUpdateSearch = this.onUpdateSearch.bind(this)
   }
 
   componentDidMount(){
     this.props.onApiRequest()
+    console.log(this.props)
   }
 
-  onUpdateUser(event){
-    this.props.onUpdateUser(event.target.value);
+  onUpdateSearch(event){
+    this.props.onUpdateSearch(event.target.value);
   }
 
   render() {
-    console.log(this.props)
+    console.log(this.props, "PROPS")
     return (
       <div className="App">
         <header className="App-header">
@@ -32,9 +36,12 @@ class App extends Component {
             Edit <code>src/App.js</code> and save to reload.
           </p>
           <br></br>
-          <input onChange={this.onUpdateUser} />
+          <input onChange={this.onUpdateSearch} />
           <br></br>
-          {this.props.user}
+
+          {this.props.search[0].title}
+          <a href={this.props.search[0].url}>{this.props.search[0].url}</a>
+
         </header> 
       </div>
     );
@@ -46,22 +53,22 @@ const productSelector = createSelector(
   products => products
 )
 
-const userSelector = createSelector(
-  state => state.user,
-  user => user
+const searchSelector = createSelector(
+  state => state.search,
+  search => search
 )
 
 const mapStateToProps = createSelector(
   productSelector,
-  userSelector,
-  (products, user) => ({
+  searchSelector,
+  (products, search) => ({
     products,
-    user
+    search
   })
 ) 
 
 const mapActionsToProps= {
-  onUpdateUser: updateUser,
+  onUpdateSearch: updateSearch,
   onApiRequest: apiRequest
 };
 
